@@ -206,6 +206,9 @@
         exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
           // create a CDR from the DMG to bypass any steps which require user interaction
           var cdrPath = filename.replace(/.dmg$/, '.cdr');
+          if (fs.existsSync(cdrPath)) {
+            fs.unlinkSync(cdrPath);
+          }
           exec('hdiutil convert "' + filename + '" -format UDTO -o "' + cdrPath + '"', function(err){
             exec('hdiutil attach "' + cdrPath + '" -nobrowse', function(err){
               if(err) {
