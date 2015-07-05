@@ -231,7 +231,20 @@
               if (results[i].match(dmgExp)) {
                 var mountPoint = results[i].split("\t").pop();
                 var fileToRun = path.join(mountPoint, dmg_name + ".app");
-                return callback(null, fileToRun);
+                if (fs.existsSync(fileToRun)) {
+                  // dmg and app name are identical
+                  return callback(null, fileToRun);
+                } else {
+                  //find the first .app file
+                  var mountedFiles = fs.readdirSync(mountPoint);
+                  for (var j=0;j<mountedFiles.length;j++) {
+                    var file = mountedFiles[j];
+                    if (/.*\.app$/.test(file)) {
+                      var fileToRun = path.join(mountPoint, file);
+                      return callback(null, fileToRun);
+                    }
+                  }
+                }
               }
             }
             callback(Error("Mount point not found"));
