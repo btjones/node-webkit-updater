@@ -185,11 +185,12 @@
         extension = path.extname(filename),
         destination = path.join(os.tmpdir(), path.basename(filename, extension));
 
-      if(!fs.existsSync(destination)){
-        fs.mkdirSync(destination);
-      }
-
       if(extension === ".zip"){
+
+        if(!fs.existsSync(destination)){
+          fs.mkdirSync(destination);
+        }
+
         exec('unzip -xo "' + filename + '" >/dev/null',{ cwd: destination }, function(err){
           if(err){
             console.log(err);
